@@ -13,14 +13,15 @@ const AddProduct = ({ createProduct }) => {
     const [name, setName] = useState("");
     const [image, setImage] = useState("");
     const [description, setDescription] = useState("");
+    const [recipe, setRecipe] = useState("");
     const [price, setPrice] = useState(0);
 
     /**
      * Checks if the form is filled.
      */
     const isFormFilled = useCallback(() => {
-        return name && image && description && price > 0;
-    }, [name, image, description, price]);
+        return name && image && description && recipe && price > 0;
+    }, [name, image, description, recipe, price]);
 
     const [show, setShow] = useState(false);
 
@@ -84,6 +85,22 @@ const AddProduct = ({ createProduct }) => {
                                 }}
                             />
                         </FloatingLabel>
+                    
+
+                        <FloatingLabel
+                            controlId="inputDescription"
+                            label="Add Recipe"
+                            className="mb-3"
+                        >
+                            <Form.Control
+                                as="textarea"
+                                placeholder="recipe"
+                                style={{ height: "80px" }}
+                                onChange={(e) => {
+                                    setRecipe(e.target.value);
+                                }}
+                            />
+                        </FloatingLabel>
                         <FloatingLabel
                             controlId="inputPrice"
                             label="Price in ALGO"
@@ -111,6 +128,7 @@ const AddProduct = ({ createProduct }) => {
                                 name,
                                 image,
                                 description,
+                                recipe,
                                 price,
                             });
                             handleClose();
