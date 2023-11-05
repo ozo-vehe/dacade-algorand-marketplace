@@ -1,12 +1,15 @@
 #pragma version 6
+
 txn ApplicationID
 int 0
 ==
 bnz main_l16
+
 txn OnCompletion
 int DeleteApplication
 ==
 bnz main_l15
+
 txna ApplicationArgs 0
 byte "buy"
 ==
@@ -20,6 +23,7 @@ byte "gift"
 ==
 bnz main_l6
 err
+
 main_l6:
 txna ApplicationArgs 1
 byte "OWNER"
@@ -32,6 +36,7 @@ global ZeroAddress
 bnz main_l8
 int 0
 return
+
 main_l8:
 byte "OWNER"
 txna ApplicationArgs 1
@@ -41,6 +46,7 @@ byte "true"
 app_global_put
 int 1
 return
+
 main_l9:
 txn Sender
 global CreatorAddress
@@ -58,6 +64,7 @@ int 0
 bnz main_l11
 int 0
 return
+
 main_l11:
 byte "PRICE"
 txna ApplicationArgs 1
@@ -68,6 +75,7 @@ txna ApplicationArgs 2
 app_global_put
 int 1
 return
+
 main_l12:
 global GroupSize
 int 2
@@ -88,14 +96,10 @@ btoi
 *
 ==
 &&
-gtxn 1 Sender
-gtxn 0 Sender
-==
-&&
-&&
 bnz main_l14
 int 0
 return
+
 main_l14:
 byte "SOLD"
 byte "SOLD"
@@ -106,24 +110,21 @@ btoi
 app_global_put
 int 1
 return
+
 main_l15:
 txn Sender
 global CreatorAddress
 ==
 return
+
 main_l16:
 txn NumAppArgs
 int 4
 ==
 assert
-txn Note
+txn ApplicationArgs 4
 byte "marketplace:uv1"
 ==
-assert
-txna ApplicationArgs 3
-btoi
-int 0
->
 assert
 byte "NAME"
 txna ApplicationArgs 0
@@ -146,8 +147,6 @@ byte "false"
 app_global_put
 byte "OWNER"
 global CreatorAddress
-byte ""
-concat
 app_global_put
 int 1
 return
