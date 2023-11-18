@@ -14,6 +14,7 @@ import {
 import approvalProgram from "!!raw-loader!../contracts/marketplace_approval.teal";
 import clearProgram from "!!raw-loader!../contracts/marketplace_clear.teal";
 import { base64ToUTF8String, utf8ToBase64String } from "./conversions";
+import { getUrl } from "./supabase";
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class Product {
@@ -271,7 +272,6 @@ export const updateProductAction = async (senderAddress, appId, price, descripti
 export const getProductsAction = async () => {
     console.log("Fetching products...")
 
-
     // Get latest round for minRound filter
     const latestRound = await getStatus()
 
@@ -358,7 +358,8 @@ const getApplication = async (appId) => {
 
         if (getField("IMAGE", globalState) !== undefined) {
             let field = getField("IMAGE", globalState).value.bytes
-            image = base64ToUTF8String(field)
+            const image_id = base64ToUTF8String(field);
+            image = await getUrl(image_id);
         }
 
         if (getField("DESCRIPTION", globalState) !== undefined) {

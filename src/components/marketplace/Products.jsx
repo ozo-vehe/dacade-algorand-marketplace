@@ -14,6 +14,7 @@ import {
 } from "../../utils/marketplace";
 import PropTypes from "prop-types";
 import { Row } from "react-bootstrap";
+import { saveUrl } from "../../utils/supabase";
 
 /**
  * Products component displays a list of products and provides
@@ -55,9 +56,20 @@ const Products = ({ address, fetchBalance }) => {
    * @param {Object} data - Product data to be created.
    */
   const createProduct = async (data) => {
+    console.log(data);
+    const { image, name, description, price } = data;
+    const image_id = await saveUrl(image);
+
+    const newData = {
+      name,
+      description,
+      price,
+      image: image_id
+    }
+    
     try {
       setLoading(true);
-      await createProductAction(address, data);
+      await createProductAction(address, newData);
       toast(<NotificationSuccess text="Product added successfully." />);
       await getProducts();
       await fetchBalance(address);

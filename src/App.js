@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Cover from "./components/Cover";
 import './App.css';
 import Wallet from "./components/Wallet";
-import {Container, Nav} from "react-bootstrap";
+import { Container, Nav } from "react-bootstrap";
 import Products from "./components/marketplace/Products";
-import {Notification} from "./components/utils/Notifications";
-import {indexerClient, myAlgoConnect} from "./utils/constants";
+import { Notification } from "./components/utils/Notifications";
+import { indexerClient, myAlgoConnect } from "./utils/constants";
 import coverImg from "./assets/img/cover.jpg";
 
 const App = function AppWrapper() {
@@ -38,9 +38,9 @@ const App = function AppWrapper() {
                 fetchBalance(_account.address);
                 console.log(accounts)
             }).catch(error => {
-            console.log('Could not connect to MyAlgo wallet');
-            console.error(error);
-        })
+                console.log('Could not connect to MyAlgo wallet');
+                console.error(error);
+            })
     };
 
     const disconnect = () => {
@@ -48,7 +48,7 @@ const App = function AppWrapper() {
         setName(null);
         setBalance(null);
     };
-
+    
     return (
         <>
             <Notification />
@@ -66,11 +66,11 @@ const App = function AppWrapper() {
                         </Nav.Item>
                     </Nav>
                     <main>
-                        <Products address={address} fetchBalance={fetchBalance}/>
+                        <Products address={address} fetchBalance={fetchBalance} />
                     </main>
                 </Container>
             ) : (
-                <Cover name={"Algorand Food Marketplace"} coverImg={coverImg} connect={connectWallet}/>
+                <Cover name={"Algorand Food Marketplace"} coverImg={coverImg} connect={connectWallet} />
             )}
         </>
     );

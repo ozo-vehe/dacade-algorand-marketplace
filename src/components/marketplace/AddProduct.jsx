@@ -106,7 +106,7 @@ const AddProduct = ({ createProduct }) => {
                     <Button
                         variant="dark"
                         disabled={!isFormFilled()}
-                        onClick={() => {
+                        onClick={async () => {
                             createProduct({
                                 name,
                                 image,
