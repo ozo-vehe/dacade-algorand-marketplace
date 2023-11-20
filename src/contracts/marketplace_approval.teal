@@ -1,26 +1,47 @@
 #pragma version 6
+
+# Check if the transaction is for the application
 txn ApplicationID
 int 0
 ==
+# If not, branch to the error handler
 bnz main_l16
+
+# Check if the transaction is on completion
 txn OnCompletion
 int DeleteApplication
 ==
+# If not, branch to the error handler
 bnz main_l15
+
+# Check if the first application argument is "buy"
 txna ApplicationArgs 0
 byte "buy"
 ==
+# If so, branch to the buy handler
 bnz main_l12
+
+# Check if the first application argument is "update"
 txna ApplicationArgs 0
 byte "update"
 ==
+# If so, branch to the update handler
 bnz main_l9
+
+# Check if the first application argument is "gift"
 txna ApplicationArgs 0
 byte "gift"
 ==
+# If so, branch to the gift handler
 bnz main_l6
+
+# If none of the above conditions are met, throw an error
 err
+
+# Buy handler
 main_l6:
+
+# Check if the owner of the item is not the sender
 txna ApplicationArgs 1
 byte "OWNER"
 app_global_get
@@ -29,57 +50,88 @@ txna ApplicationArgs 1
 global ZeroAddress
 !=
 &&
+# If not, branch to the error handler
 bnz main_l8
-int 0
-return
-main_l8:
+
+# Set the owner of the item to the sender
 byte "OWNER"
 txna ApplicationArgs 1
 app_global_put
+
+# Set the gifted status to true
 byte "GIFTED"
 byte "true"
 app_global_put
+
+# Return success
 int 1
 return
+
+# Update handler
 main_l9:
+
+# Check if the sender is the creator of the application
 txn Sender
 global CreatorAddress
 ==
+
+# Check if the second application argument is an integer
 txna ApplicationArgs 1
 btoi
 int 0
 >
 &&
+
+# Check if the length of the third application argument is greater than zero
 txna ApplicationArgs 2
 len
 int 0
 >
 &&
+# If any of the conditions are not met, branch to the error handler
 bnz main_l11
+
+# Return error
 int 0
 return
+
+# Set the price of the item
 main_l11:
 byte "PRICE"
 txna ApplicationArgs 1
 btoi
 app_global_put
+
+# Set the description of the item
 byte "DESCRIPTION"
 txna ApplicationArgs 2
 app_global_put
+
+# Return success
 int 1
 return
+
+# Sell handler
 main_l12:
+
+# Check if there are two participants in the group
 global GroupSize
 int 2
 ==
+
+# Check if the type of the first transaction is pay
 gtxn 1 TypeEnum
 int pay
 ==
+
+# Check if the receiver of the payment is the owner of the item
 gtxn 1 Receiver
 byte "OWNER"
 app_global_get
 ==
 &&
+
+# Check if the amount of the payment is equal to the price of the item
 gtxn 1 Amount
 byte "PRICE"
 app_global_get
@@ -88,14 +140,21 @@ btoi
 *
 ==
 &&
+
+# Check if the sender of the first transaction is the same as the sender of the application call
 gtxn 1 Sender
 gtxn 0 Sender
 ==
 &&
 &&
+# If any of the conditions are not met, branch to the error handler
 bnz main_l14
+
+# Return error
 int 0
 return
+
+# Update the sold status of the item
 main_l14:
 byte "SOLD"
 byte "SOLD"
@@ -104,50 +163,23 @@ txna ApplicationArgs 1
 btoi
 +
 app_global_put
+
+# Return success
 int 1
 return
+
+# Creator handler
 main_l15:
+
+# Check if the sender is the creator of the application
 txn Sender
 global CreatorAddress
 ==
+# Return success
 return
+
+# Error handler
 main_l16:
+# Check if the number of application arguments is four
 txn NumAppArgs
 int 4
-==
-assert
-txn Note
-byte "marketplace:uv1"
-==
-assert
-txna ApplicationArgs 3
-btoi
-int 0
->
-assert
-byte "NAME"
-txna ApplicationArgs 0
-app_global_put
-byte "IMAGE"
-txna ApplicationArgs 1
-app_global_put
-byte "DESCRIPTION"
-txna ApplicationArgs 2
-app_global_put
-byte "PRICE"
-txna ApplicationArgs 3
-btoi
-app_global_put
-byte "SOLD"
-int 0
-app_global_put
-byte "GIFTED"
-byte "false"
-app_global_put
-byte "OWNER"
-global CreatorAddress
-byte ""
-concat
-app_global_put
-int 1
-return
