@@ -19,7 +19,7 @@ import UpdateProduct from "./UpdateProduct";
  * @param {function} deleteProduct - Function to delete the product.
  */
 const Product = ({ address, product, giftProduct, updateProduct, buyProduct, deleteProduct }) => {
-    const { name, image, description, price, sold, appId, owner } =
+    const { name, image, description, price, recipe, sold, appId, owner } =
         product;
 
     const [count, setCount] = useState(1);
@@ -43,6 +43,7 @@ const Product = ({ address, product, giftProduct, updateProduct, buyProduct, del
                     <Card.Body className="d-flex flex-column text-center">
                         <Card.Title>{name}</Card.Title>
                         <Card.Text className="flex-grow-1">{description}</Card.Text>
+                        <Card.Text className="flex-grow-1">{recipe}</Card.Text>
                         <Form className="d-flex align-content-stretch flex-row gap-2">
                             {product.owner === address ? (
                                 <>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
 import PropTypes from 'prop-types';
-
+//creating the cover
 const Cover = ({ name, coverImg, connect }) => {
     return (
         <div className="coverContainer d-flex justify-content-center flex-column text-center min-vh-100">
